@@ -1,0 +1,7 @@
+data
+outputs
+logs
+__pycache__
+
+trained_models/
+wandb/
