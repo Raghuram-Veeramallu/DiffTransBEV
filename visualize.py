@@ -1,12 +1,13 @@
 import torch
 import torchvision
+import hydra
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from PIL import Image
 from torch.utils.data import DataLoader
-
 from data_loader.nuscenes import NuScenesDataset
+
 from models.DiffDiTBEVModel import DiffDiTBEV
 from models.view_transformer.lss_utils import gen_dx_bx
 from utils.visualization_utils import NormalizeInverse, add_ego, get_nusc_maps, plot_nusc_map
@@ -25,11 +26,9 @@ normalize_img = torchvision.transforms.Compose((
                                  std=[0.229, 0.224, 0.225]),
 ))
 
-def viz_model_preds(version,
+def viz_model_preds(config,
                     modelf,
-                    dataroot='data/nuscenes',
-                    map_folder='data/nuscenes',
-                    gpuid=1,
+                    map_folder='/Users/harisairaghuramveeramallu/Documents/Programming/av-bev/data/nuscenes/',
                     viz_train=False,
 
                     H=900, W=1600,
@@ -48,8 +47,8 @@ def viz_model_preds(version,
                     # ybound=[0, 50, 0.5],
                     # dbound=[0, 50, 1],
 
-                    bsz=4,
-                    nworkers=10,
+                    bsz=2,
+                    nworkers=1,
                     ):
     grid_conf = {
         'xbound': xbound,
@@ -59,18 +58,8 @@ def viz_model_preds(version,
     }
     cams = ['CAM_FRONT_LEFT', 'CAM_FRONT', 'CAM_FRONT_RIGHT',
             'CAM_BACK_LEFT', 'CAM_BACK', 'CAM_BACK_RIGHT']
-    data_aug_conf = {
-                    'resize_lim': resize_lim,
-                    'final_dim': final_dim,
-                    'rot_lim': rot_lim,
-                    'H': H, 'W': W,
-                    'rand_flip': rand_flip,
-                    'bot_pct_lim': bot_pct_lim,
-                    'cams': cams,
-                    'Ncams': 5,
-                }
 
-    dataset = NuScenesDataset('v1.0-mini', dataroot)
+    dataset = NuScenesDataset(config)
 
     trainloader = DataLoader(
         dataset, batch_size=bsz, shuffle=True, 
@@ -88,7 +77,7 @@ def viz_model_preds(version,
     device = torch.device('cpu')
 
     # need to add config
-    model = DiffDiTBEV(config=None, device='cpu')
+    model = DiffDiTBEV(config=config, device='cpu')
 
     print('loading', modelf)
     model.load_state_dict(torch.load(modelf, map_location=device))
@@ -154,14 +143,16 @@ def viz_model_preds(version,
                 plt.ylim((0, out.shape[3]))
                 add_ego(bx, dx)
 
-                imname = f'viz_out/diffdit/eval{batchi:06}_{si:03}.jpg'
+                imname = f'visualizations/diffditbev/eval{batchi:06}_{si:03}.jpg'
                 print('saving', imname)
                 plt.savefig(imname)
                 counter += 1
             
             break
 
+@hydra.main(version_base=None, config_path="configs", config_name="test_one_epoch")
+def main(cfg):
+    viz_model_preds(cfg, 'trained_models/diffditbev_model_20.pt')
 
 if __name__ == '__main__':
-    # viz_model_preds('v1.0-mini', 'trained_models/diffbev_50.pth')
-    viz_model_preds('v1.0-mini', 'trained_models/diffditbev_model_5.pt')
+    main()

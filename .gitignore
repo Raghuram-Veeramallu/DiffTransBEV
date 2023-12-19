@@ -3,7 +3,9 @@ outputs
 logs
 __pycache__
 slurm-*.out
+.DS_Store
 
 camera_feeds/
 trained_models/
 wandb/
+visualizations/
