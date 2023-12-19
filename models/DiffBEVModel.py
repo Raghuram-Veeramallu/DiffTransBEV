@@ -66,6 +66,7 @@ class DiffBEVModel(nn.Module):
 
         # Sample a random timestep for each image (lss_out.shape[0] is the batch size)
         timesteps = torch.randint(0, self.diffusion_pipeline.num_timesteps, (lss_out.shape[0],)).long()
+        timesteps = timesteps.to(self.device)
 
         noisy_images, noise = self.diffusion_pipeline.forward_diffusion(lss_out, timesteps)
         noisy_images = noisy_images.to(self.device)

@@ -231,10 +231,11 @@ class DiffDiTBEVTrainer:
 
             if self.opt_level == 'O0':
                 loss.backward()
+                self.optimizer.step()
             else:
                 scaler.scale(loss).backward()
-            scaler.step(self.optimizer)
-            scaler.update()
+                scaler.step(self.optimizer)
+                scaler.update()
 
             backward_time.update(time.time() - tflag)
             loss_meter.update(loss.item())
