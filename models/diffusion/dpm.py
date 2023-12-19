@@ -4,7 +4,7 @@ from tqdm import tqdm
 from models.utils import broadcast
 
 class DPM:
-    def __init__(self, beta_start=1e-4, beta_end=1e-2, num_timesteps=1000, device='cpu'):
+    def __init__(self, beta_start=1e-4, beta_end=1e-2, num_timesteps=1000, device='cuda:0'):
         # Betas settings are in section 4 of https://arxiv.org/pdf/2006.11239.pdf
         # Implemented linear schedule for now, cosine works better tho.
         self.betas = torch.linspace(beta_start, beta_end, num_timesteps)

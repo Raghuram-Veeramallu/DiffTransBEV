@@ -40,7 +40,7 @@ from models.view_transformer.lss_utils import get_grid_config
 
 class DiffDiTBEV(nn.Module):
 
-    def __init__(self, config, device='cpu'):
+    def __init__(self, config, device):
         super().__init__()
         self.config = config
         self.device = device
@@ -51,7 +51,7 @@ class DiffDiTBEV(nn.Module):
 
         # initializing the Lift Splat Shoot module
         lss_grid_config = get_grid_config(self.config)
-        self.lss_transformer = LiftSplatShootTransformer(lss_grid_config)
+        self.lss_transformer = LiftSplatShootTransformer(lss_grid_config, device=self.device)
 
         # defining the number of diffusion steps
         self.num_diffusion_steps = self.config.dit.diffusion_steps
@@ -63,7 +63,7 @@ class DiffDiTBEV(nn.Module):
         beta_start = self.config.diffusion.beta_start
         beta_end = self.config.diffusion.beta_end
         num_timesteps = self.config.diffusion.num_timesteps
-        self.diffusion_pipeline = DPM(beta_start, beta_end, num_timesteps)
+        self.diffusion_pipeline = DPM(beta_start, beta_end, num_timesteps, device=self.device)
 
         # initalizing the cross attention module
         embed_dim = self.config.crossattention.embed_dim

@@ -51,7 +51,7 @@ class DiffDiTBEVTrainer:
         self.lr_type = self.config.optimizer.lr_type
 
         self.base_mm = self.config.model.base_momentum
-        self.forward_loss = SimpleLoss(pos_weight=2.13)
+        self.forward_loss = SimpleLoss(pos_weight=2.13, device=self.device)
 
         """construct the whole network"""
         self.resume_path = self.config.checkpoint.resume_path
@@ -109,7 +109,7 @@ class DiffDiTBEVTrainer:
 
         """build model"""
         self.logging.info('Initializing the DiffDiTBEV Model')
-        net = DiffDiTBEV(self.config)
+        net = DiffDiTBEV(self.config, self.device)
         if self.sync_bn:
             net = torch.nn.SyncBatchNorm.convert_sync_batchnorm(net)
         self.model = net.to(self.device)

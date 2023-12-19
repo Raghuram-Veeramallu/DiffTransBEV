@@ -6,7 +6,7 @@ from models.view_transformer.lss_utils import QuickCumsum, cumsum_trick, gen_dx_
 
 class LiftSplatShootTransformer(nn.Module):
 
-    def __init__(self, grid_conf, dep_sup=False, out_dep=False, device='cpu'):
+    def __init__(self, grid_conf, dep_sup=False, out_dep=False, device='cuda:0'):
         super().__init__()
 
         self.grid_conf = grid_conf

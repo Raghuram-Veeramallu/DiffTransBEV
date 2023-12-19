@@ -11,9 +11,10 @@ from models.view_transformer.lss_utils import get_grid_config
 
 class DiffBEVModel(nn.Module):
 
-    def __init__(self, config):
+    def __init__(self, config, device):
         super().__init__()
         self.config = config
+        self.device = device
 
         # initializing the SWin Transformer module
         swin_pretrained = self.config.model.swin_pretrained
@@ -21,7 +22,7 @@ class DiffBEVModel(nn.Module):
 
         # initializing the Lift Splat Shoot module
         lss_grid_config = get_grid_config(self.config)
-        self.lss_transformer = LiftSplatShootTransformer(lss_grid_config)
+        self.lss_transformer = LiftSplatShootTransformer(lss_grid_config, device=self.device)
 
         # initializing the UNet module
         unet_input_channels = self.config.unet.input_channels
@@ -31,7 +32,7 @@ class DiffBEVModel(nn.Module):
         beta_start = self.config.diffusion.beta_start
         beta_end = self.config.diffusion.beta_end
         num_timesteps = self.config.diffusion.num_timesteps
-        self.diffusion_pipeline = DPM(beta_start, beta_end, num_timesteps)
+        self.diffusion_pipeline = DPM(beta_start, beta_end, num_timesteps, device=self.device)
 
         # initalizing the cross attention module
         embed_dim = self.config.crossattention.embed_dim
@@ -67,7 +68,7 @@ class DiffBEVModel(nn.Module):
         timesteps = torch.randint(0, self.diffusion_pipeline.num_timesteps, (lss_out.shape[0],)).long()
 
         noisy_images, noise = self.diffusion_pipeline.forward_diffusion(lss_out, timesteps)
-        noisy_images = noisy_images.to('cpu')
+        noisy_images = noisy_images.to(self.device)
 
         # Predict the noise residual
         noise_pred = self.ddpm_unet(noisy_images, timesteps)
