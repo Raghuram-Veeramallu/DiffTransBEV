@@ -50,9 +50,6 @@ class DiffBEVTrainer:
         self.max_lr = base_lr * self.global_batch_size
         self.lr_type = self.config.optimizer.lr_type
 
-        self.base_mm = self.config.model.base_momentum
-        self.forward_loss = SimpleLoss(pos_weight=2.13, device=self.device)
-
         """construct the whole network"""
         self.resume_path = self.config.checkpoint.resume_path
         if torch.cuda.is_available():
@@ -61,6 +58,10 @@ class DiffBEVTrainer:
             cudnn.benchmark = True
         else:
             self.device = torch.device('cpu')
+
+        self.base_mm = self.config.model.base_momentum
+        self.forward_loss = SimpleLoss(pos_weight=2.13, device=self.device)
+
         self.construct_model()
 
         """save checkpoint path"""

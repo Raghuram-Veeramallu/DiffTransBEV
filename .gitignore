@@ -2,6 +2,7 @@ data
 outputs
 logs
 __pycache__
+slurm-*.out
 
 trained_models/
 wandb/
