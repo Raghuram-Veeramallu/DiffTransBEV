@@ -125,10 +125,10 @@ class DiffBEVTrainer:
 
         if self.distributed:
             if torch.cuda.is_available():
-                dist.init_process_group(backend='nccl', init_method='env://')
+                dist.init_process_group(backend='nccl', init_method='env://', world_size=self.world_size, rank=self.rank)
                 self.model = DDP(self.model)
             else:
-                dist.init_process_group(backend='gloo', init_method='env://')
+                dist.init_process_group(backend='gloo', init_method='env://', world_size=self.world_size, rank=self.rank)
     
     # resume snapshots from pre-train
     def resume_model(self, model_path=None):
