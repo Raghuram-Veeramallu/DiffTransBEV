@@ -1,5 +1,3 @@
-
-
 ########## NuScenes constants ############
 
 VALID_DATA_VERSIONS = ['v1.0-mini', 'v1.0-trainval', 'v1.0-test']

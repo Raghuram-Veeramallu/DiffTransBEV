@@ -155,7 +155,7 @@ class DiffBEVTrainer:
                      'steps': self.steps,
                      'model': self.model.state_dict(),
                      'optimizer': self.optimizer.state_dict(),
-                     'amp': amp.state_dict()
+                    #  'amp': amp.state_dict()
                     }
             torch.save(state, self.ckpt_path.format(epoch))
 

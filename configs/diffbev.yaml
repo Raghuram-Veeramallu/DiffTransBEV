@@ -10,10 +10,10 @@ logging:
 
 data:
   rootpath: /Users/harisairaghuramveeramallu/Documents/Programming/av-bev/data/nuscenes/
-  version: v1.0-mini # valid options are v1.0-mini, v1.0-trainval, v1.0-test
+  version: v1.0-trainval
   is_train: True
   data_workers: 2
-  num_examples: 404 # check the size of samples from nuscenes
+  num_examples: 323
   train_batch_size: 4
   val_batch_size: 1
 
