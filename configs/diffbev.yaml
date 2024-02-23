@@ -1,0 +1,81 @@
+stage: train
+
+logging:
+  logdir: logs
+  logfile: diffbev
+  level: INFO
+  log_all: False
+  enable_wandb: True
+  log_step: 10
+
+data:
+  rootpath: /Users/harisairaghuramveeramallu/Documents/Programming/av-bev/data/nuscenes/
+  version: v1.0-trainval
+  is_train: True
+  data_workers: 2
+  num_examples: 323
+  train_batch_size: 4
+  val_batch_size: 1
+
+trainer: diffbev
+
+optimizer:
+  total_epochs: 2
+  warmup_epochs: 0.01
+  base_lr: 0.0001
+  lr_type: cosine
+  weight_decay: 0.001
+  exclude_bias_and_bn: true
+
+model:
+  swin_pretrained: True
+  base_momentum: 0.99
+  backbone_type: diffbev
+
+swin:
+  pretrained_path: './trained_models/swin_t_imagenet1k_v1.pth'
+
+lss:
+  xbound: [-25, 25, 0.5]
+  ybound: [-10, 10, 20]
+  zbound: [0, 50, 0.5]
+  dbound: [0, 50, 1]
+  # xbound: [-50.0, 50.0, 0.5]
+  # ybound: [-50.0, 50.0, 0.5]
+  # zbound: [-10.0, 10.0, 20.0]
+  # dbound: [4.0, 45.0, 1.0]
+
+unet:
+  input_channels: 64
+
+diffusion:
+  beta_start: 0.0001
+  beta_end: 0.01
+  num_timesteps: 1000
+
+dit:
+  diffusion_steps: 1000
+
+crossattention:
+  embed_dim: 64
+  num_heads: 8
+
+bevencode:
+  input_channels: 64
+  output_channels: 1
+
+checkpoint:
+  time_stamp:
+  resume_path:
+  save_epoch: 2
+  ckpt_path: "trained_models/diffbev/{}/{}_{}_{}.pth.tar"
+
+amp:
+  sync_bn: True
+  opt_level: "O0"
+
+distributed_run: False
+world_size: 1
+local_rank: 0
+rank: 0
+seed: 55
