@@ -1,4 +1,6 @@
-# Perception in Field HRI Project
+# DiffTransBEV
+
+Generating optimized noise-free BEV representaiton of Autonomous Vehicles (Self-driving cars) using Stable Diffusion Transformers (DiTs), Diffusion Models, SwinV2 Transformers and Lift-Splat-Shoot.
 
 ## Installation
 
